@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    #results {
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Conversor de Hashes</h1>
+  <textarea id="input" placeholder="Ingresa los valores separados por coma"></textarea>
+  <button id="convertButton">Convertir a SHA-256</button>
+  <div id="results"></div>
+  
+  <script>
+    document.getElementById('convertButton').addEventListener('click', async function() {
+      var input = document.getElementById('input').value.split(',');
+      var resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = '';
+      
+      for (var i = 0; i < input.length; i++) {
+        var encoder = new TextEncoder();
+        var data = encoder.encode(input[i].trim());
+        var hash = await window.crypto.subtle.digest('SHA-256', data);
+        var hashArray = Array.from(new Uint8Array(hash));
+        var hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        
+        var resultDiv = document.createElement('div');
+        resultDiv.textContent = 'Original: ' + input[i] + ', SHA-256: ' + hashHex;
+        resultsDiv.appendChild(resultDiv);
+      }
+    });
+  </script>
+</body>
+</html>
